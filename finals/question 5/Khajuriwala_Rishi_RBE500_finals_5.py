@@ -25,8 +25,8 @@ rover_2_latitude = data(rover_2[:,1])
 rover_2_longitude = data(rover_2[:,3])
 
 print'5-A The average location of master',(master_latitude),'N',(master_longitude),'W'
-print'5-A The average location of master',(rover_1_latitude),'N',(rover_2_longitude),'W'
-print'5-A The average location of master',(rover_2_latitude),'N',(rover_2_longitude),'W'
+print'5-A The average location of Rover 1',(rover_1_latitude),'N',(rover_2_longitude),'W'
+print'5-A The average location of Rover 2',(rover_2_latitude),'N',(rover_2_longitude),'W'
 
 master_latitude_meters= 111073.9415780662
 master_longitude_meters=82804.80196213457
@@ -35,14 +35,6 @@ rover_1_longitude_meters=82804.89609216161
 rover_2_latitude_meters=111073.93847293993
 rover_2_longitude_meters=82805.00951690557
 
-# master_latitude_error = master[:,1]-master_latitude
-# master_longitude_error= master[:,3]-master_longitude
-#
-# rover_1_latitude_error = rover_1[:,1]-rover_1_latitude
-# rover_1_longitude_error = rover_1[:,3]-rover_1_longitude
-#
-# rover_2_latitude_error = rover_2[:,1]-rover_2_latitude
-# rover_2_longitude_error = rover_2[:,3]-rover_2_longitude
 
 def std(reading,mean,conversion):
 	q = []
@@ -96,18 +88,11 @@ def error_conversion(reading,mean,conversion):
 		degrees = (degrees_whole + (min/60))
 		error = degrees - mean
 		error_conversion = q.append(error * conversion)
-
 	return q
-
-
-
 master_latitude_error  = error_conversion(master[:,1],master_latitude,master_latitude_meters)
-
 master_longitude_error = error_conversion(master[:,3],master_longitude,master_longitude_meters)
-
 rover_1_latitude_error = error_conversion(rover_1[:,1],rover_1_latitude,rover_1_latitude_meters)
 rover_1_longitude_error = error_conversion(rover_1[:,3],rover_1_longitude,rover_2_longitude_meters)
-
 rover_2_latitude_error = error_conversion(rover_2[:,1],rover_2_latitude,rover_2_latitude_meters)
 rover_2_longitude_error = error_conversion(rover_2[:,3],rover_2_longitude,rover_2_longitude_meters)
 m_1_error_la= master_latitude_error[0:920]
@@ -116,18 +101,13 @@ m_2_error_la = master_latitude_error[1093:1740]
 m_2_error_lo = master_longitude_error[1093:1740]
 r_1_error_la = rover_1_latitude_error[11:len(rover_1_latitude_error)]
 r_1_error_lo = rover_1_longitude_error[11:len(rover_1_longitude_error)]
-
-
-R1_m_latitude = [a_i - b_i for a_i,b_i in zip(r_1_error_la,m_1_error_la)]
-R1_m_longitude = [a_i - b_i for a_i,b_i in zip(r_1_error_lo,m_1_error_lo)]
-R2_m_longitude =[a_i - b_i for a_i,b_i in zip(rover_2_longitude_error,m_2_error_la)]
-R2_m_latitude = [a_i - b_i for a_i,b_i in zip(rover_2_latitude_error,m_2_error_lo)]
-
+R1_m_latitude = [a- b for a,b in zip(r_1_error_la,m_1_error_la)]
+R1_m_longitude = [a- b for a,b in zip(r_1_error_lo,m_1_error_lo)]
+R2_m_longitude =[a- b for a,b in zip(rover_2_longitude_error,m_2_error_la)]
+R2_m_latitude = [a- b for a,b in zip(rover_2_latitude_error,m_2_error_lo)]
 R1_m_latitude_std = np.std(R1_m_latitude)
 R1_m_longitude_std = np.std(R1_m_longitude)
-
 R2_m_latitude_std = np.std(R2_m_latitude)
 R2_m_longitude_std = np.std(R2_m_longitude)
-
 print'5-D The Standard deviation after subtraction from rover 1 and master:',(R1_m_latitude_std),'-->latitude',(R1_m_longitude_std),'-->longitude'
 print'5-D The Standard Deviation after substraction from rover 2 and master:',(R2_m_latitude_std),'-->latitude',(R2_m_longitude_std),'-->longitude'
